@@ -1,9 +1,95 @@
 ﻿using Nikse.SubtitleEdit.Core.SubtitleFormats;
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Nikse.SubtitleEdit.Core.Common
 {
+    public static class TimeSpanHelpers
+    {
+          private static readonly Regex TimeRegex = new Regex(@"(?<days>\d{1,2}\.)?(?<hours>\d{1,2}\:)?(?<minutes>\d{1,2}\:)(?<seconds>\d{2}\.)(?<mill>\d+)");
+        private static readonly Regex MinutesRegex = new Regex(@"(?<minutes>\d+\:)(?<seconds>\d{1,2}[\.|\:])(?<mill>\d+)");
+
+        public static TimeSpan FromTimeSpanString(this string s)
+        {
+            string daysString = null;
+            string hoursString = null;
+            string minutesString;
+            string secondsString;
+            string millisecondsString;
+
+            if (TimeRegex.IsMatch(s))
+			{
+
+                var match = TimeRegex.Match(s);
+                daysString = match.Groups[1]?.Value?.Trim('.');
+                hoursString = match.Groups[2]?.Value?.Trim(':');
+                minutesString = match.Groups[3].Value.Trim(':');
+                secondsString = match.Groups[4].Value.Trim('.');
+                millisecondsString = match.Groups[5].Value;
+
+            }
+			else if(MinutesRegex.IsMatch(s))
+			{
+                var match = MinutesRegex.Match(s);
+                minutesString = match.Groups[1].Value.Trim(':');
+                secondsString = match.Groups[2].Value.Trim(':');
+                millisecondsString = (int.Parse(match.Groups[3].Value) * 10).ToString();
+            }
+			else
+			{
+                throw new ApplicationException($"Unknown time string format cap'n - {s}");
+            }
+
+            
+
+            var days = 0;
+            if (!string.IsNullOrWhiteSpace(daysString))
+            {
+                days = int.Parse(daysString);
+            }
+
+            var hours = 0;
+            
+            if (!string.IsNullOrWhiteSpace(hoursString))
+            {
+                hours = int.Parse(hoursString);
+            }
+
+            while (hours > 24)
+            {
+                days++;
+                hours -= 24;
+            }
+
+            var minutes = int.Parse(minutesString);
+
+            while (minutes > 60)
+            {
+                hours++;
+                minutes -= 60;
+            }
+
+            var seconds = int.Parse(secondsString);
+
+            while (seconds > 60)
+            {
+                minutes++;
+                seconds -= 60;
+            }
+
+            var milliseconds = int.Parse(millisecondsString);
+
+            TimeSpan time = TimeSpan.FromDays(days);
+            time = time.Add(TimeSpan.FromHours(hours));
+            time = time.Add(TimeSpan.FromMinutes(minutes));
+            time = time.Add(TimeSpan.FromSeconds(seconds));
+            time = time.Add(TimeSpan.FromMilliseconds(milliseconds));
+
+            return time;
+        }
+    }
+    
     public class TimeCode
     {
         private static readonly char[] TimeSplitChars = { ':', ',', '.' };

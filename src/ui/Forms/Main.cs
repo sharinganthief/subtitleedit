@@ -22377,6 +22377,22 @@ namespace Nikse.SubtitleEdit.Forms
 
             string movieFileName = null;
 
+            //check for smil
+
+            var smilFile = $"{fileNameNoExtension}.smil";
+            
+            if (File.Exists(smilFile))
+            {
+                var smil = new Smil();
+                var fileName = smil.PullFirstMedia(smilFile);
+
+                if (!string.IsNullOrWhiteSpace(fileName) && File.Exists(fileName))
+                {
+                    OpenVideo(fileName);
+                    return true;
+                }
+            }
+            
             foreach (var extension in Utilities.VideoFileExtensions.Concat(Utilities.AudioFileExtensions))
             {
                 var fileName = fileNameNoExtension + extension;

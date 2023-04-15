@@ -26,6 +26,7 @@ namespace Nikse.SubtitleEdit.Core.Common
 
         public List<HistoryItem> HistoryItems { get; }
         public bool CanUndo => HistoryItems.Count > 0;
+        public Dictionary<string, string> Misc { get; set; } = new Dictionary<string, string>();
 
         public Subtitle()
         {
@@ -74,6 +75,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             FileName = subtitle.FileName;
             OriginalFormat = subtitle.OriginalFormat;
             OriginalEncoding = subtitle.OriginalEncoding;
+            Misc = subtitle.Misc;
         }
 
         public Subtitle(List<Paragraph> paragraphs) : this()

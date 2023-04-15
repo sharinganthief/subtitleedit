@@ -1,5 +1,6 @@
 ﻿using Nikse.SubtitleEdit.Core.Translate.Processor;
 using System;
+using System.Collections.Generic;
 
 namespace Nikse.SubtitleEdit.Core.Common
 {
@@ -16,6 +17,8 @@ namespace Nikse.SubtitleEdit.Core.Common
         public TimeCode Duration => new TimeCode(EndTime.TotalMilliseconds - StartTime.TotalMilliseconds);
 
         public bool Forced { get; set; }
+
+        public Dictionary<string, string> Misc = new Dictionary<string, string>();
 
         /// <summary>
         /// Extra info (style name for ASSA).
@@ -85,6 +88,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             Style = paragraph.Style;
             NewSection = paragraph.NewSection;
             Bookmark = paragraph.Bookmark;
+            Misc = paragraph.Misc;
         }
 
         public Paragraph(string text, double startTotalMilliseconds, double endTotalMilliseconds)

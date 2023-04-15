@@ -186,6 +186,7 @@ namespace Nikse.SubtitleEdit.Core.SubtitleFormats
                     new ScenaristClosedCaptions(),
                     new ScenaristClosedCaptionsDropFrame(),
                     new SmartTitler(),
+                    new Smil(),
                     new SmilTimesheetData(),
                     new SmpteTt2052(),
                     new SoftNiSub(),
